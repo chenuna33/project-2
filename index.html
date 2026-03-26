@@ -68,19 +68,20 @@
         const LOCAL_KEY = `data_${appId}`;
         const LABEL_KEY = `labels_${appId}`;
 
+        // 類別清單，標記哪些是「非現金(刷卡)」項目
         const categories = [
-            { key: 'breakfast', label: '早餐', icon: '🥐', hasNote: true },
-            { key: 'lunch', label: '午餐', icon: '🍱', hasNote: true },
-            { key: 'dinner', label: '晚餐', icon: '🥘', hasNote: true },
-            { key: 'drink', label: '飲料', icon: '🧋' },
-            { key: 'smoke', label: '煙', icon: '🚬' },
-            { key: 'yunlin', label: '雲林', icon: '💰', hasNote: true },
-            { key: 'bill', label: '繳費', icon: '💸', hasNote: true },
-            { key: 'others', label: '自訂1', icon: '🎀', editable: true, hasNote: true },
-            { key: 'others2', label: '自訂2', icon: '🌸', editable: true, hasNote: true },
-            { key: 'others3', label: '自訂3', icon: '🌷', editable: true, hasNote: true },
-            { key: 'card1', label: '刷卡A', icon: '💳', editable: true, hasNote: true },
-            { key: 'card2', label: '刷卡B', icon: '💳', editable: true, hasNote: true }
+            { key: 'breakfast', label: '早餐', icon: '🥐', hasNote: true, isCash: true },
+            { key: 'lunch', label: '午餐', icon: '🍱', hasNote: true, isCash: true },
+            { key: 'dinner', label: '晚餐', icon: '🥘', hasNote: true, isCash: true },
+            { key: 'drink', label: '飲料', icon: '🧋', isCash: true },
+            { key: 'smoke', label: '煙', icon: '🚬', isCash: true },
+            { key: 'yunlin', label: '雲林', icon: '💰', hasNote: true, isCash: true },
+            { key: 'bill', label: '繳費', icon: '💸', hasNote: true, isCash: true },
+            { key: 'others', label: '自訂1', icon: '🎀', editable: true, hasNote: true, isCash: true },
+            { key: 'others2', label: '自訂2', icon: '🌸', editable: true, hasNote: true, isCash: true },
+            { key: 'others3', label: '自訂3', icon: '🌷', editable: true, hasNote: true, isCash: true },
+            { key: 'card1', label: '刷卡A', icon: '💳', editable: true, hasNote: true, isCash: false },
+            { key: 'card2', label: '刷卡B', icon: '💳', editable: true, hasNote: true, isCash: false }
         ];
 
         let allData = JSON.parse(localStorage.getItem(LOCAL_KEY) || '{}');
@@ -197,8 +198,8 @@
                         </div>
                         <div class="grid grid-cols-4 gap-2">
                             ${categories.map(c => `
-                                <div class="item-box featured-box">
-                                    <input type="text" value="${customLabels[c.key]||c.label}" ${!c.editable?'readonly':''} onblur="ul('${c.key}',this.value)" class="category-label-input">
+                                <div class="item-box featured-box ${!c.isCash ? '!bg-blue-50/50 !border-blue-100' : ''}">
+                                    <input type="text" value="${customLabels[c.key]||c.label}" ${!c.editable?'readonly':''} onblur="ul('${c.key}',this.value)" class="category-label-input ${!c.isCash ? '!color-blue-600' : ''}">
                                     ${c.hasNote ? `<input type="text" oninput="u('${ds}','${c.key}_n',this.value)" value="${d[c.key+'_n']||''}" placeholder="..." class="item-note-input">` : ''}
                                     <div class="flex items-center justify-end w-full px-1">
                                         <span class="text-[10px] mr-auto">${c.icon}</span>
@@ -209,7 +210,7 @@
                         </div>
                         <div class="flex justify-between mt-3 pt-2 border-t border-gray-50 items-center">
                             <div class="text-[11px] font-black text-gray-400 uppercase tracking-tight">
-                                口袋剩餘: <span id="pkt-${ds}" class="text-sm ml-1">$0</span>
+                                口袋剩餘 (不含刷卡): <span id="pkt-${ds}" class="text-sm ml-1">$0</span>
                             </div>
                             <div class="text-[11px] font-black text-purple-400 uppercase tracking-tight">
                                 本日花費: <span id="exp-${ds}" class="text-base ml-1 text-purple-700">$0</span>
@@ -248,13 +249,26 @@
                 const d = allData[ds] || {};
                 let b = (d.base !== undefined && d.base !== '') ? Number(d.base) : run;
                 let dr = Number(d.draw) || 0;
-                let dayEx = 0;
-                categories.forEach(c => dayEx += (Number(d[c.key]) || 0));
-                let pkt = dr - dayEx;
+                
+                let dayTotalEx = 0; // 當日所有支出
+                let dayCashEx = 0;  // 當日現金支出 (不含刷卡)
+                
+                categories.forEach(c => {
+                    const val = Number(d[c.key]) || 0;
+                    dayTotalEx += val;
+                    if(c.isCash) dayCashEx += val;
+                });
+
+                // 口袋餘額 = 從錢包拿取的現金 - 當日現金支出
+                let pkt = dr - dayCashEx; 
+                // 錢包剩下 = 錢包基數 - 拿取的現金
                 let wRem = b - dr;
+                
+                // 傳遞到下一天的基數 = 錢包剩下 + 口袋剩下的現金
                 run = wRem + pkt;
+
                 if(document.getElementById(`wrem-${ds}`)) document.getElementById(`wrem-${ds}`).innerText = `$${wRem.toLocaleString()}`;
-                if(document.getElementById(`exp-${ds}`)) document.getElementById(`exp-${ds}`).innerText = `$${dayEx.toLocaleString()}`;
+                if(document.getElementById(`exp-${ds}`)) document.getElementById(`exp-${ds}`).innerText = `$${dayTotalEx.toLocaleString()}`;
                 if(document.getElementById(`pkt-${ds}`)) {
                     const el = document.getElementById(`pkt-${ds}`);
                     el.innerText = `$${pkt.toLocaleString()}`;

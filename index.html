@@ -12,7 +12,7 @@
         .category-label-input { background: transparent; border: none; width: 100%; font-size: 10px; color: #6d28d9; font-weight: 800; text-align: center; outline: none; }
         .item-note-input { font-size: 9px; padding: 1px 2px; border-radius: 4px; border: 1px dashed #ddd; width: 100%; height: 18px; margin-bottom: 2px; outline: none; background: #fff; text-align: center; color: #666; }
         .day-card { background: white; border-radius: 1rem; padding: 0.8rem; box-shadow: 0 2px 10px rgba(139, 92, 246, 0.08); border: 1px solid #f3f0ff; margin-bottom: 1rem; }
-        .item-box { background-color: #fcfbff; border-radius: 8px; padding: 4px; border: 1px solid #f0edff; display: flex; flex-direction: column; align-items: center; }
+        .item-box { background-color: #fcfbff; border-radius: 8px; padding: 4px; border: 1px solid #f0edff; display: flex; flex-direction: column; align-items: center; min-height: 52px; justify-content: space-between; }
         .featured-box { background-color: #f5f3ff; border: 1px solid #e9e4ff; }
         .wallet-zone { background: #f3f2ff; border-radius: 0.75rem; padding: 0.5rem 0.8rem; display: flex; align-items: center; gap: 0.8rem; flex-grow: 1; }
         .wallet-input { background: white; border-radius: 8px; text-align: center; font-weight: 900; font-size: 14px; color: #4338ca; border: 1px solid #dbeafe; width: 4rem; padding: 3px 0; outline: none; }
@@ -68,14 +68,14 @@
         const LOCAL_KEY = `data_${appId}`;
         const LABEL_KEY = `labels_${appId}`;
 
-        // 類別清單，標記哪些是「非現金(刷卡)」項目
+        // 類別清單
         const categories = [
             { key: 'breakfast', label: '早餐', icon: '🥐', hasNote: true, isCash: true },
             { key: 'lunch', label: '午餐', icon: '🍱', hasNote: true, isCash: true },
             { key: 'dinner', label: '晚餐', icon: '🥘', hasNote: true, isCash: true },
-            { key: 'drink', label: '飲料', icon: '🧋', isCash: true },
+            { key: 'drink', label: '飲料', icon: '🧋', hasNote: true, isCash: true }, // 新增備註
             { key: 'smoke', label: '煙', icon: '🚬', isCash: true },
-            { key: 'yunlin', label: '家庭開銷', icon: '💰', hasNote: true, isCash: true },
+            { key: 'family', label: '家庭開銷', icon: '🏠', hasNote: true, isCash: true }, // 雲林 -> 家庭開銷
             { key: 'bill', label: '繳費', icon: '💸', hasNote: true, isCash: true },
             { key: 'others', label: '自訂1', icon: '🎀', editable: true, hasNote: true, isCash: true },
             { key: 'others2', label: '自訂2', icon: '🌸', editable: true, hasNote: true, isCash: true },
@@ -250,8 +250,8 @@
                 let b = (d.base !== undefined && d.base !== '') ? Number(d.base) : run;
                 let dr = Number(d.draw) || 0;
                 
-                let dayTotalEx = 0; // 當日所有支出
-                let dayCashEx = 0;  // 當日現金支出 (不含刷卡)
+                let dayTotalEx = 0; 
+                let dayCashEx = 0;  
                 
                 categories.forEach(c => {
                     const val = Number(d[c.key]) || 0;
@@ -259,12 +259,8 @@
                     if(c.isCash) dayCashEx += val;
                 });
 
-                // 口袋餘額 = 從錢包拿取的現金 - 當日現金支出
                 let pkt = dr - dayCashEx; 
-                // 錢包剩下 = 錢包基數 - 拿取的現金
                 let wRem = b - dr;
-                
-                // 傳遞到下一天的基數 = 錢包剩下 + 口袋剩下的現金
                 run = wRem + pkt;
 
                 if(document.getElementById(`wrem-${ds}`)) document.getElementById(`wrem-${ds}`).innerText = `$${wRem.toLocaleString()}`;

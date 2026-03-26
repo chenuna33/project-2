@@ -6,156 +6,76 @@
     <title>2026 紫色生活流水帳 - Web App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            background-color: #f8f7ff;
-            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .glass-header {
-            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-            position: sticky;
-            top: 0;
-            z-index: 50;
-        }
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        .category-label-input {
-            background: transparent;
-            border: none;
-            width: 100%;
-            font-size: 9px;
-            color: #64748b;
-            font-weight: 700;
-            text-align: center;
-            outline: none;
-        }
-        .item-note-input {
-            font-size: 8px;
-            padding: 0px 2px;
-            border-radius: 3px;
-            border: 1px dashed #eee;
-            width: 100%;
-            height: 14px;
-            margin-bottom: 1px;
-            outline: none;
-            background: #fff;
-            text-align: center;
-        }
-        .day-card {
-            background: white;
-            border-radius: 0.75rem;
-            padding: 0.6rem 0.75rem;
-            box-shadow: 0 1px 5px rgba(139, 92, 246, 0.05);
-            border: 1px solid #f3f0ff;
-        }
-        .item-box {
-            background-color: #fcfbff;
-            border-radius: 6px;
-            padding: 2px;
-            border: 1px solid #f8f6ff;
-        }
-        .featured-box {
-            background-color: #f5f3ff;
-            border: 1px solid #ede9fe;
-        }
-        .wallet-zone {
-            background: #f1f0ff;
-            border-radius: 0.75rem;
-            padding: 0.35rem 0.6rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            flex-grow: 1;
-        }
-        .wallet-input {
-            background: white;
-            border-radius: 6px;
-            text-align: center;
-            font-weight: 900;
-            font-size: 13px;
-            color: #4338ca;
-            border: 1px solid #e0e7ff;
-            width: 3.5rem;
-            padding: 2px 0;
-            outline: none;
-        }
-        #saveIndicator {
-            transition: opacity 0.3s;
-        }
-        .loading-spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #8b5cf6;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        body { background-color: #f8f7ff; font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .glass-header { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); position: sticky; top: 0; z-index: 50; }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .category-label-input { background: transparent; border: none; width: 100%; font-size: 10px; color: #6d28d9; font-weight: 800; text-align: center; outline: none; }
+        .item-note-input { font-size: 9px; padding: 1px 2px; border-radius: 4px; border: 1px dashed #ddd; width: 100%; height: 18px; margin-bottom: 2px; outline: none; background: #fff; text-align: center; color: #666; }
+        .day-card { background: white; border-radius: 1rem; padding: 0.8rem; box-shadow: 0 2px 10px rgba(139, 92, 246, 0.08); border: 1px solid #f3f0ff; margin-bottom: 1rem; }
+        .item-box { background-color: #fcfbff; border-radius: 8px; padding: 4px; border: 1px solid #f0edff; display: flex; flex-direction: column; align-items: center; }
+        .featured-box { background-color: #f5f3ff; border: 1px solid #e9e4ff; }
+        .wallet-zone { background: #f3f2ff; border-radius: 0.75rem; padding: 0.5rem 0.8rem; display: flex; align-items: center; gap: 0.8rem; flex-grow: 1; }
+        .wallet-input { background: white; border-radius: 8px; text-align: center; font-weight: 900; font-size: 14px; color: #4338ca; border: 1px solid #dbeafe; width: 4rem; padding: 3px 0; outline: none; }
+        .loading-spinner { border: 3px solid #f3f3f3; border-top: 3px solid #8b5cf6; border-radius: 50%; width: 28px; height: 28px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="min-h-screen pb-20">
-    <header class="glass-header text-white shadow-lg p-2 mb-2">
+<body class="min-h-screen pb-24">
+    <header class="glass-header text-white shadow-lg p-3">
         <div class="max-w-5xl mx-auto flex justify-between items-center px-1">
             <div class="flex flex-col">
-                <h1 class="text-base font-bold leading-none">💜 2026 雲端流水帳</h1>
-                <div class="flex items-center gap-1 mt-1">
-                    <span id="syncStatus" class="inline-block w-1.5 h-1.5 rounded-full bg-yellow-400"></span>
-                    <p class="text-[8px] text-purple-100 opacity-80" id="statusText">正在初始化連線...</p>
+                <h1 class="text-lg font-black tracking-tight leading-none">💜 2026 生活流水帳</h1>
+                <div class="flex items-center gap-1.5 mt-1.5">
+                    <span id="syncStatus" class="inline-block w-2 h-2 rounded-full bg-yellow-400"></span>
+                    <p class="text-[10px] text-purple-100 font-bold" id="statusText">正在同步中...</p>
                 </div>
             </div>
-            <div class="flex gap-3 text-right items-center">
+            <div class="flex gap-4 text-right items-center">
                 <div class="flex flex-col">
-                    <span class="text-[7px] opacity-70 font-bold">總支出</span>
-                    <span class="text-base font-black" id="totalExpenseToday">$ 0</span>
+                    <span class="text-[8px] opacity-80 font-bold">今日總支出</span>
+                    <span class="text-lg font-black" id="totalExpenseToday">$ 0</span>
                 </div>
-                <div class="flex flex-col border-l border-white/20 pl-3">
-                    <span class="text-[7px] opacity-70 font-bold">預計餘額</span>
-                    <span class="text-base font-black text-yellow-300" id="finalWalletBalance">$ 0</span>
+                <div class="flex flex-col border-l border-white/30 pl-4">
+                    <span class="text-[8px] opacity-80 font-bold">預計總餘額</span>
+                    <span class="text-lg font-black text-yellow-300" id="finalWalletBalance">$ 0</span>
                 </div>
             </div>
         </div>
     </header>
 
-    <main class="max-w-5xl mx-auto px-2">
-        <div id="expenseList" class="space-y-2.5 flex flex-col items-center justify-center py-20">
+    <main class="max-w-5xl mx-auto px-3 mt-4">
+        <div id="expenseList" class="space-y-4 flex flex-col items-center justify-center py-24">
             <div class="loading-spinner mb-4"></div>
-            <p class="text-purple-400 font-bold">正在從雲端讀取您的資料...</p>
+            <p id="loadingMsg" class="text-purple-500 font-black text-sm">正在載入帳本資料...</p>
+            <button id="forceLocalBtn" onclick="forceLoadLocal()" class="hidden mt-6 bg-purple-600 text-white px-6 py-2.5 rounded-full text-sm font-black shadow-lg">
+                ⚡️ 先使用手機備份
+            </button>
         </div>
     </main>
 
-    <div id="saveIndicator" class="fixed bottom-4 right-4 bg-black/80 text-white text-[10px] px-3 py-1 rounded-full opacity-0 pointer-events-none z-50">
-        ✅ 已即時同步至雲端
+    <div id="saveIndicator" class="fixed bottom-6 right-6 bg-black/80 text-white text-[11px] px-4 py-1.5 rounded-full opacity-0 pointer-events-none z-50 transition-opacity duration-300 font-bold">
+        ✅ 已更新 (雲端+本地)
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Firebase 配置
-        const firebaseConfig = JSON.parse(__firebase_config);
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const START_DATE_STR = '2026-03-26';
         const END_DATE_STR = '2026-12-31';
-        
-        const defaultCategories = [
-            { key: 'breakfast', label: '早餐', icon: '🥐', editable: false, hasNote: true },
-            { key: 'lunch', label: '午餐', icon: '🍱', editable: false, hasNote: true },
-            { key: 'dinner', label: '晚餐', icon: '🥘', editable: false, hasNote: true },
-            { key: 'drink', label: '飲料', icon: '🧋', editable: false, hasNote: false },
-            { key: 'smoke', label: '煙', icon: '🚬', editable: false, hasNote: false },
-            { key: 'yunlin', label: '雲林開銷', icon: '💰', editable: false, hasNote: true },
-            { key: 'bill', label: '繳費', icon: '💸', editable: false, hasNote: true },
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'purple-expense-2026';
+        const LOCAL_KEY = `data_${appId}`;
+        const LABEL_KEY = `labels_${appId}`;
+
+        const categories = [
+            { key: 'breakfast', label: '早餐', icon: '🥐', hasNote: true },
+            { key: 'lunch', label: '午餐', icon: '🍱', hasNote: true },
+            { key: 'dinner', label: '晚餐', icon: '🥘', hasNote: true },
+            { key: 'drink', label: '飲料', icon: '🧋' },
+            { key: 'smoke', label: '煙', icon: '🚬' },
+            { key: 'yunlin', label: '雲林', icon: '💰', hasNote: true },
+            { key: 'bill', label: '繳費', icon: '💸', hasNote: true },
             { key: 'others', label: '自訂1', icon: '🎀', editable: true, hasNote: true },
             { key: 'others2', label: '自訂2', icon: '🌸', editable: true, hasNote: true },
             { key: 'others3', label: '自訂3', icon: '🌷', editable: true, hasNote: true },
@@ -163,115 +83,136 @@
             { key: 'card2', label: '刷卡B', icon: '💳', editable: true, hasNote: true }
         ];
 
-        let allData = {};
-        let customLabels = {};
+        let allData = JSON.parse(localStorage.getItem(LOCAL_KEY) || '{}');
+        let customLabels = JSON.parse(localStorage.getItem(LABEL_KEY) || '{}');
         let currentUser = null;
-        let isFirstLoad = true;
+        let isCloud = false;
+        let rendered = false;
 
-        const initAuth = async () => {
-            try {
+        const timeout = setTimeout(() => {
+            if (!rendered) {
+                document.getElementById('forceLocalBtn').classList.remove('hidden');
+                document.getElementById('loadingMsg').innerText = '載入稍慢，可先切換至本地';
+            }
+        }, 4500);
+
+        window.forceLoadLocal = () => {
+            if (rendered) return;
+            renderList();
+            document.getElementById('statusText').innerText = '模式：手機本地備份中';
+            document.getElementById('syncStatus').className = 'inline-block w-2 h-2 rounded-full bg-blue-400';
+        };
+
+        try {
+            const config = JSON.parse(__firebase_config);
+            const app = initializeApp(config);
+            const auth = getAuth(app);
+            const db = getFirestore(app);
+
+            const startAuth = async () => {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
                     await signInAnonymously(auth);
                 }
-            } catch (err) {
-                console.error("Auth error:", err);
-                document.getElementById('statusText').innerText = '連線失敗';
-            }
-        };
-        initAuth();
+            };
+            startAuth();
 
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                currentUser = user;
-                document.getElementById('syncStatus').className = 'inline-block w-1.5 h-1.5 rounded-full bg-green-400';
-                document.getElementById('statusText').innerText = '雲端已連線';
-                subscribeToData();
-            }
-        });
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    currentUser = user;
+                    isCloud = true;
+                    clearTimeout(timeout);
+                    document.getElementById('syncStatus').className = 'inline-block w-2 h-2 rounded-full bg-green-400';
+                    document.getElementById('statusText').innerText = '雲端連線成功';
+                    
+                    onSnapshot(doc(db, 'artifacts', appId, 'users', user.uid, 'data', 'all'), (snap) => {
+                        if (snap.exists()) {
+                            allData = snap.data();
+                            localStorage.setItem(LOCAL_KEY, JSON.stringify(allData));
+                        }
+                        renderList();
+                    });
 
-        function subscribeToData() {
-            if (!currentUser) return;
-            const labelsDoc = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'settings', 'labels');
-            onSnapshot(labelsDoc, (snap) => {
-                if (snap.exists()) customLabels = snap.data();
-                if (!isFirstLoad) renderList();
+                    onSnapshot(doc(db, 'artifacts', appId, 'users', user.uid, 'settings', 'labels'), (snap) => {
+                        if (snap.exists()) {
+                            customLabels = snap.data();
+                            localStorage.setItem(LABEL_KEY, JSON.stringify(customLabels));
+                            if(rendered) renderList();
+                        }
+                    });
+
+                    window.doSync = async () => {
+                        if (!currentUser) return;
+                        await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'data', 'all'), allData);
+                        await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'settings', 'labels'), customLabels);
+                        const i = document.getElementById('saveIndicator');
+                        i.style.opacity = '1';
+                        setTimeout(() => i.style.opacity = '0', 1000);
+                    };
+                }
             });
-
-            const dataDoc = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'data', 'all_expenses');
-            onSnapshot(dataDoc, (snap) => {
-                if (snap.exists()) allData = snap.data();
-                isFirstLoad = false;
-                renderList();
-            }, (err) => {
-                document.getElementById('expenseList').innerHTML = `<p class="text-red-500">同步失敗: ${err.message}</p>`;
-            });
+        } catch (e) {
+            forceLoadLocal();
         }
 
         function renderList() {
+            rendered = true;
             let html = '';
             let current = new Date(START_DATE_STR);
-            const endDate = new Date(END_DATE_STR);
+            const end = new Date(END_DATE_STR);
 
-            while (current <= endDate) {
-                const dateStr = current.toISOString().split('T')[0];
-                const dayOfWeek = ['日', '一', '二', '三', '四', '五', '六'][current.getDay()];
-                const isWeekend = current.getDay() === 0 || current.getDay() === 6;
-                const dateParts = dateStr.split('-');
+            while (current <= end) {
+                const ds = current.toISOString().split('T')[0];
+                const dow = ['日', '一', '二', '三', '四', '五', '六'][current.getDay()];
+                const isW = current.getDay() === 0 || current.getDay() === 6;
+                const dp = ds.split('-');
 
-                if (current.getDate() === 1 || dateStr === START_DATE_STR) {
-                    html += `<div class="pt-6 pb-2 px-1"><h2 class="text-2xl font-black text-purple-900 border-l-4 border-purple-500 pl-3">${parseInt(dateParts[1])}月</h2></div>`;
+                if (current.getDate() === 1 || ds === START_DATE_STR) {
+                    html += `<div class="pt-8 pb-3 px-1"><h2 class="text-3xl font-black text-purple-900 border-l-8 border-purple-500 pl-4">${parseInt(dp[1])}月</h2></div>`;
                 }
 
-                const dD = allData[dateStr] || {};
-                
+                const d = allData[ds] || {};
                 html += `
                     <div class="day-card">
-                        <div class="flex flex-col gap-2.5">
-                            <!-- 日期區域加大 -->
-                            <div class="flex items-center gap-3 border-b border-purple-50 pb-2">
-                                <div class="${isWeekend ? 'text-red-500' : 'text-purple-600'} shrink-0 px-2 text-center border-r border-purple-100 pr-4">
-                                    <div class="text-[12px] font-black opacity-80 tracking-tight leading-none">${dateParts[1]}/${dateParts[2]}</div>
-                                    <div class="text-lg font-black leading-tight mt-0.5">周${dayOfWeek}</div>
+                        <div class="flex items-center gap-4 border-b-2 border-purple-50 pb-3 mb-3">
+                            <div class="${isW ? 'text-red-500' : 'text-purple-600'} shrink-0 text-center border-r-2 border-purple-50 pr-5">
+                                <div class="text-[13px] font-black opacity-70 leading-none">${dp[1]}/${dp[2]}</div>
+                                <div class="text-2xl font-black mt-1">周${dow}</div>
+                            </div>
+                            <div class="wallet-zone">
+                                <div class="flex flex-col items-center">
+                                    <span class="text-[9px] font-black text-purple-400">錢包</span>
+                                    <input type="number" oninput="u('${ds}','base',this.value)" value="${d.base||''}" class="wallet-input">
                                 </div>
-                                <div class="wallet-zone">
-                                    <div class="flex items-center gap-1.5">
-                                        <span class="text-[10px] font-bold text-purple-500">錢包</span>
-                                        <input type="number" oninput="updateCloud('${dateStr}','base',this.value)" value="${dD.base||''}" class="wallet-input">
-                                    </div>
-                                    <div class="w-px h-6 bg-purple-200"></div>
-                                    <div class="flex items-center gap-1.5">
-                                        <span class="text-[10px] font-bold text-blue-500">拿取</span>
-                                        <input type="number" oninput="updateCloud('${dateStr}','draw',this.value)" value="${dD.draw||''}" class="wallet-input !text-blue-700 !border-blue-100">
-                                    </div>
-                                    <div class="ml-auto flex items-center gap-2 pr-1">
-                                        <span class="text-[10px] font-bold text-gray-400">剩下</span>
-                                        <span class="text-base font-black text-purple-700" id="wallet-rem-${dateStr}">$0</span>
-                                    </div>
+                                <div class="flex flex-col items-center">
+                                    <span class="text-[9px] font-black text-blue-400">拿取</span>
+                                    <input type="number" oninput="u('${ds}','draw',this.value)" value="${d.draw||''}" class="wallet-input !text-blue-700 !border-blue-100">
+                                </div>
+                                <div class="ml-auto text-right">
+                                    <span class="text-[9px] font-black text-gray-400">剩下</span>
+                                    <div class="text-lg font-black text-purple-800" id="wrem-${ds}">$0</div>
                                 </div>
                             </div>
-                            <div class="grid grid-cols-4 sm:grid-cols-6 gap-1.5">
-                                ${defaultCategories.map(c => `
-                                    <div class="flex flex-col item-box featured-box">
-                                        <input type="text" value="${customLabels[c.key]||c.label}" ${!c.editable?'readonly':''} onblur="updateLabelCloud('${c.key}',this.value)" class="category-label-input">
-                                        ${c.hasNote ? `<input type="text" oninput="updateCloud('${dateStr}','${c.key}_n',this.value)" value="${dD[c.key+'_n']||''}" placeholder="..." class="item-note-input">` : ''}
-                                        <div class="relative">
-                                            <span class="absolute left-1 top-1/2 -translate-y-1/2 text-[8px]">${c.icon}</span>
-                                            <input type="number" oninput="updateCloud('${dateStr}','${c.key}',this.value)" value="${dD[c.key]||''}" class="w-full pl-3.5 pr-0.5 py-0.5 bg-transparent rounded text-[11px] font-black outline-none text-right">
-                                        </div>
+                        </div>
+                        <div class="grid grid-cols-4 gap-2">
+                            ${categories.map(c => `
+                                <div class="item-box featured-box">
+                                    <input type="text" value="${customLabels[c.key]||c.label}" ${!c.editable?'readonly':''} onblur="ul('${c.key}',this.value)" class="category-label-input">
+                                    ${c.hasNote ? `<input type="text" oninput="u('${ds}','${c.key}_n',this.value)" value="${d[c.key+'_n']||''}" placeholder="..." class="item-note-input">` : ''}
+                                    <div class="flex items-center justify-end w-full px-1">
+                                        <span class="text-[10px] mr-auto">${c.icon}</span>
+                                        <input type="number" oninput="u('${ds}','${c.key}',this.value)" value="${d[c.key]||''}" class="w-2/3 text-right text-sm font-black bg-transparent outline-none text-purple-900">
                                     </div>
-                                `).join('')}
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="flex justify-between mt-3 pt-2 border-t border-gray-50 items-center">
+                            <div class="text-[11px] font-black text-gray-400 uppercase tracking-tight">
+                                口袋剩餘: <span id="pkt-${ds}" class="text-sm ml-1">$0</span>
                             </div>
-                            <div class="flex justify-between items-center pt-1 px-1">
-                                <div class="flex items-center gap-1.5">
-                                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">口袋</span>
-                                    <span class="text-xs font-black" id="pocket-${dateStr}">$0</span>
-                                </div>
-                                <div class="flex items-center gap-1.5">
-                                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">本日花費</span>
-                                    <span class="text-sm font-black text-purple-600" id="exp-${dateStr}">$0</span>
-                                </div>
+                            <div class="text-[11px] font-black text-purple-400 uppercase tracking-tight">
+                                本日花費: <span id="exp-${ds}" class="text-base ml-1 text-purple-700">$0</span>
                             </div>
                         </div>
                     </div>
@@ -282,62 +223,49 @@
             calc();
         }
 
-        let saveTimer;
-        window.updateCloud = (d, t, v) => {
-            if (!currentUser) return;
-            if (!allData[d]) allData[d] = {};
+        window.u = (d, t, v) => {
+            if(!allData[d]) allData[d] = {};
             allData[d][t] = v;
+            localStorage.setItem(LOCAL_KEY, JSON.stringify(allData));
             calc();
-            clearTimeout(saveTimer);
-            saveTimer = setTimeout(async () => {
-                try {
-                    const dataDoc = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'data', 'all_expenses');
-                    await setDoc(dataDoc, allData);
-                    const indicator = document.getElementById('saveIndicator');
-                    indicator.style.opacity = '1';
-                    setTimeout(() => indicator.style.opacity = '0', 1500);
-                } catch (err) {}
-            }, 1000);
+            if(isCloud) {
+                clearTimeout(window.syncT);
+                window.syncT = setTimeout(() => window.doSync(), 800);
+            }
         };
 
-        window.updateLabelCloud = async (k, v) => {
-            if (!currentUser) return;
+        window.ul = (k, v) => {
             customLabels[k] = v;
-            try {
-                const labelsDoc = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'settings', 'labels');
-                await setDoc(labelsDoc, customLabels);
-            } catch (err) {}
+            localStorage.setItem(LABEL_KEY, JSON.stringify(customLabels));
+            if(isCloud) window.doSync();
         };
 
         function calc() {
-            let runningBalance = 0;
+            let run = 0;
             let current = new Date(START_DATE_STR);
-            const endDate = new Date(END_DATE_STR);
-            while (current <= endDate) {
+            while (current <= new Date(END_DATE_STR)) {
                 const ds = current.toISOString().split('T')[0];
-                const dD = allData[ds] || {};
-                let base = (dD.base !== undefined && dD.base !== '') ? Number(dD.base) : runningBalance;
-                let dr = Number(dD.draw) || 0;
+                const d = allData[ds] || {};
+                let b = (d.base !== undefined && d.base !== '') ? Number(d.base) : run;
+                let dr = Number(d.draw) || 0;
                 let dayEx = 0;
-                defaultCategories.forEach(c => dayEx += (Number(dD[c.key]) || 0));
-                let pkt = dr - dayEx; 
-                let walletRem = base - dr;
-                runningBalance = walletRem + pkt;
-                const wRemEl = document.getElementById(`wallet-rem-${ds}`);
-                const expEl = document.getElementById(`exp-${ds}`);
-                const pktEl = document.getElementById(`pocket-${ds}`);
-                if(wRemEl) wRemEl.innerText = `$${walletRem.toLocaleString()}`;
-                if(expEl) expEl.innerText = `$${dayEx.toLocaleString()}`;
-                if(pktEl) {
-                    pktEl.innerText = `$${pkt.toLocaleString()}`;
-                    pktEl.className = pkt < 0 ? 'text-xs font-black text-red-500' : 'text-xs font-black text-green-600';
+                categories.forEach(c => dayEx += (Number(d[c.key]) || 0));
+                let pkt = dr - dayEx;
+                let wRem = b - dr;
+                run = wRem + pkt;
+                if(document.getElementById(`wrem-${ds}`)) document.getElementById(`wrem-${ds}`).innerText = `$${wRem.toLocaleString()}`;
+                if(document.getElementById(`exp-${ds}`)) document.getElementById(`exp-${ds}`).innerText = `$${dayEx.toLocaleString()}`;
+                if(document.getElementById(`pkt-${ds}`)) {
+                    const el = document.getElementById(`pkt-${ds}`);
+                    el.innerText = `$${pkt.toLocaleString()}`;
+                    el.className = pkt < 0 ? 'text-sm font-black text-red-500 ml-1' : 'text-sm font-black text-green-600 ml-1';
                 }
                 current.setDate(current.getDate() + 1);
             }
-            document.getElementById('finalWalletBalance').innerText = `$ ${runningBalance.toLocaleString()}`;
-            const todayStr = new Date().toISOString().split('T')[0];
+            document.getElementById('finalWalletBalance').innerText = `$ ${run.toLocaleString()}`;
+            const tStr = new Date().toISOString().split('T')[0];
             let tS = 0;
-            if(allData[todayStr]) defaultCategories.forEach(c => tS += (Number(allData[todayStr][c.key]) || 0));
+            if(allData[tStr]) categories.forEach(c => tS += (Number(allData[tStr][c.key]) || 0));
             document.getElementById('totalExpenseToday').innerText = `$ ${tS.toLocaleString()}`;
         }
     </script>
